@@ -31,7 +31,9 @@
 		<nobr>4.</nobr><input type="number" id="input_lv4" style="width:50px;" name = "inArea" value = "140">
 		<nobr>5.</nobr><input type="number" id="input_lv5" style="width:50px;" name = "inArea" value = "280">
 		<nobr>6.</nobr><input type="number" id="input_lv6" style="width:50px;" name = "inArea" value = "600">
+		<button type="button" id="autoset" value="自動配注">自動配注</button>
 	</div>
+	
 	<p>請輸入本金</p>
 	
 	<input type="number" id="principalId">
@@ -69,6 +71,29 @@
 	{
 	  var size = Math.pow(10, pos);
 	  return Math.round(num * size) / size;
+	}
+	document.getElementById('autoset').onclick = function (){
+		var initnum = parseInt(document.getElementsByName("inArea")[0].value);
+		var current = 0
+		current = initnum;
+		
+		document.getElementsByName("inArea")[1].value = current*3 //2關
+		current = parseInt(document.getElementsByName("inArea")[1].value)
+		
+		document.getElementsByName("inArea")[2].value = current*2+initnum //3關
+		current = parseInt(document.getElementsByName("inArea")[2].value)
+		
+		
+		document.getElementsByName("inArea")[3].value = current*2+initnum //4關
+		current = parseInt(document.getElementsByName("inArea")[3].value)
+		
+		document.getElementsByName("inArea")[4].value = current*2+initnum //5關
+		current = parseInt(document.getElementsByName("inArea")[4].value)
+		
+		document.getElementsByName("inArea")[5].value = current*2+initnum //6關
+		current = parseInt(document.getElementsByName("inArea")[5].value)
+		
+			
 	}
 	document.getElementById('countId').onclick = function () {
 		var Odds = 9.85;//賠率
