@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>	
+<meta charset="utf-8">
+<title>10萬挑戰計劃</title>
+	<style>
+	
+
+	body {
+	  width: 320px;	
+	  margin:0 auto;
+	  height: auto;
+	  font-family: MicrosoftJhengHeiRegular;
+	  background-color: #dbdbdb;
+	}
+	
+	</style>
+
+</head>
+
+<body>
+	<p>賠率 9.85 <span><input type="number" id="ball" style="width:20px;" value ="6"></span>碼試算</p>
+	
+	<input type="radio" name="bedStatus" id="allot" checked="checked" value="allot">固定倍率
+	<input type="radio" name="bedStatus" id="transfer" value="transfer">自訂倍率
+	<div id ="area_1">
+		<nobr>1.</nobr><input type="number" id="input_lv1" style="width:50px;" name = "inArea" value = "10">
+		<nobr>2.</nobr><input type="number" id="input_lv2" style="width:50px;" name = "inArea" value = "30">
+		<nobr>3.</nobr><input type="number" id="input_lv3" style="width:50px;" name = "inArea" value = "70"><p/>
+		<nobr>4.</nobr><input type="number" id="input_lv4" style="width:50px;" name = "inArea" value = "140">
+		<nobr>5.</nobr><input type="number" id="input_lv5" style="width:50px;" name = "inArea" value = "280">
+		<nobr>6.</nobr><input type="number" id="input_lv6" style="width:50px;" name = "inArea" value = "600">
+	</div>
+	<p>請輸入本金</p>
+	
+	<input type="number" id="principalId">
+	<button type="button" id="countId" value="計算">計算</button>
+
+	<p>獲利目標 : <strong class="total" id="totalId"></strong> </p>
+	<p id = "myText"></p>
+	<p id = "lv1"></p>
+	<p id = "lv2"></p>
+	<p id = "lv3"></p>
+	<p id = "totalMoney"></p>
+	<p id = "infor"></p>
+	
+	
+
+</body>
+</html>
+<script>
+	
+	$(document).ready(function() {
+		
+		document.getElementById('area_1').style.display = "none"
+		$('input[type=radio][name=bedStatus]').change(function() {
+			if (this.value == 'allot') {
+				document.getElementById('area_1').style.display = "none"
+				
+			}
+			else if (this.value == 'transfer') {
+				document.getElementById('area_1').style.display = "block";
+			}
+		});
+	});
+
+	function formatFloat(num, pos)
+	{
+	  var size = Math.pow(10, pos);
+	  return Math.round(num * size) / size;
+	}
+	document.getElementById('countId').onclick = function () {
+		var Odds = 9.85;//賠率
+		
+		var tar_Price = 1/10;//獲利1成
+		var lv1Count = 0;//第一注金額
+		var balls = document.getElementById('ball').value; //選幾碼
+		var lvScale = [0,1,3,2]
+		var total = 0 //總成本
+		var profit = 0 //獲利
+		
+		if (document.getElementById('area_1').style.display == "block") {
+			var count = document.getElementsByName("inArea").length;
+			total = 0
+            document.getElementById("myText").innerHTML ="";
+			for (i = 0; i < count; i++) {
+ 				//格式範例 : 第1關:10 共 : 60 獲利: 38.5
+				if (document.getElementsByName("inArea")[i].value == 0) {
+					return 0;
+				}
+				total = total+ document.getElementsByName("inArea")[i].value*balls;
+				document.getElementById("myText").innerHTML = document.getElementById("myText").innerHTML+ "第"+ (i+1) +"關: "+ document.getElementsByName("inArea")[i].value+
+					"   累計成本: "+ total+
+	
+					'<font color="'+ (document.getElementsByName("inArea")[i].value*Odds - total > 0 ? 'green' : 'red')+ '">'+ 
+					(document.getElementsByName("inArea")[i].value*Odds - total > 0 ? '  獲利  ' : '  虧損  ')+'</font>' +  
+					Math.abs(document.getElementsByName("inArea")[i].value*Odds - total )
+					+"<br>"+"<br>";
+            }
+        	
+		}else{
+			//定義變數的內容
+			var newNum = parseInt(document.getElementById('principalId').value) *tar_Price;
+
+			lv1Count = parseInt(document.getElementById('principalId').value)*1/20/5;
+
+			document.getElementById('totalId').textContent = Math.round(newNum*100)/100;
+			//第一關
+			total = total + lv1Count*balls;
+			document.getElementById('lv1').textContent = "第1關:" + lv1Count + "  共 : " + total + "  獲利: " + (lv1Count*Odds - total);
+			profit = profit + (lv1Count*Odds - total);
+
+			//第一關
+			total = total + lv1Count*lvScale[2]*balls;
+			document.getElementById('lv2').textContent = "第2關:" + lv1Count*lvScale[2] + "  共 : " + total+ "  獲利: " + (lv1Count*lvScale[2]*Odds - total);
+			profit = profit + (lv1Count*lvScale[2]*Odds - total);
+
+			//第三關
+			total = total + Math.round(lv1Count*lvScale[2]*lvScale[3]+lv1Count)*balls;
+			document.getElementById('lv3').textContent = "第3關:" + Math.round(lv1Count*lvScale[2]*lvScale[3]+lv1Count) + "  共 : " + total + "  獲利: " + ((lv1Count*lvScale[2]*lvScale[3]+lv1Count)*Odds - total);
+			profit = profit + ((lv1Count*lvScale[2]*lvScale[3]+lv1Count)*Odds - total);
+
+
+			document.getElementById('totalMoney').textContent = "成本/本金: " +total+"/"+parseInt(document.getElementById('principalId').value)+" = "+ total / parseInt(document.getElementById('principalId').value); 
+
+			document.getElementById('infor').textContent = "平均完成獲利注數:" + formatFloat((Math.round(newNum*100)/100) / (profit/3), 2);
+			
+		}
+	
+		
+	}
+</script>
